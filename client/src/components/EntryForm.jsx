@@ -1,20 +1,26 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './Button.jsx';
+import { NewCategoryDialog } from './NewCategoryDialog.jsx';
+import { inputClasses, labelClasses } from './formStyles.js';
 import { centsToInput, parseAmountToCents } from '../lib/money.js';
 
-const CATEGORIES = ['Food', 'Transport', 'Bills', 'Shopping', 'Health', 'Fun', 'Other'];
+const NEW_CATEGORY = '__new__';
 
-const inputClasses =
-  'w-full rounded-lg border border-rule-strong bg-paper px-2.5 py-2 text-sm text-ink ' +
-  'focus-visible:border-accent focus-visible:ring-3 focus-visible:ring-accent-wash focus-visible:outline-none ' +
-  'disabled:opacity-60';
-const labelClasses = 'text-xs font-semibold tracking-wide text-ink-faint uppercase';
-
-export function EntryForm({ entry, submitLabel, busy, onSubmit, onCancel, autoFocus = false }) {
+export function EntryForm({
+  entry,
+  categories,
+  onCreateCategory,
+  submitLabel,
+  busy,
+  onSubmit,
+  onCancel,
+  autoFocus = false,
+}) {
   const [amount, setAmount] = useState(entry ? centsToInput(entry.amountCents) : '');
   const [note, setNote] = useState(entry?.note ?? '');
   const [category, setCategory] = useState(entry?.category ?? '');
   const [error, setError] = useState(null);
+  const [addingCategory, setAddingCategory] = useState(false);
 
   const amountInput = useRef(null);
 
@@ -46,69 +52,90 @@ export function EntryForm({ entry, submitLabel, busy, onSubmit, onCancel, autoFo
     }
   }
 
+  function handleCategoryChange(event) {
+    if (event.target.value === NEW_CATEGORY) {
+      setAddingCategory(true);
+    } else {
+      setCategory(event.target.value);
+    }
+  }
+
+  async function saveNewCategory(name) {
+    const created = await onCreateCategory(name);
+    setCategory(created.name);
+    setAddingCategory(false);
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
-      <div className="grid grid-cols-2 gap-2.5">
+    <>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
+        <div className="grid grid-cols-2 gap-2.5">
+          <label className="flex flex-col gap-1">
+            <span className={labelClasses}>Amount</span>
+            <input
+              ref={amountInput}
+              type="text"
+              inputMode="decimal"
+              placeholder="0.00"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              disabled={busy}
+              className={`${inputClasses} font-mono tabular-nums`}
+            />
+          </label>
+
+          <label className="flex flex-col gap-1">
+            <span className={labelClasses}>Category</span>
+            <select
+              value={category}
+              onChange={handleCategoryChange}
+              disabled={busy}
+              className={inputClasses}
+            >
+              <option value="">—</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.name}>
+                  {c.name}
+                </option>
+              ))}
+              <option value={NEW_CATEGORY}>+ Create new category</option>
+            </select>
+          </label>
+        </div>
+
         <label className="flex flex-col gap-1">
-          <span className={labelClasses}>Amount</span>
-          <input
-            ref={amountInput}
-            type="text"
-            inputMode="decimal"
-            placeholder="0.00"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+          <span className={labelClasses}>Note</span>
+          <textarea
+            rows={2}
+            placeholder="What was it for?"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
             disabled={busy}
-            className={`${inputClasses} font-mono tabular-nums`}
+            className={`${inputClasses} resize-y`}
           />
         </label>
 
-        <label className="flex flex-col gap-1">
-          <span className={labelClasses}>Category</span>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            disabled={busy}
-            className={inputClasses}
-          >
-            <option value="">—</option>
-            {CATEGORIES.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      <label className="flex flex-col gap-1">
-        <span className={labelClasses}>Note</span>
-        <textarea
-          rows={2}
-          placeholder="What was it for?"
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          disabled={busy}
-          className={`${inputClasses} resize-y`}
-        />
-      </label>
-
-      {error && (
-        <p role="alert" className="text-sm text-danger">
-          {error}
-        </p>
-      )}
-
-      <div className="flex gap-2">
-        <Button type="submit" variant="primary" disabled={busy}>
-          {busy ? 'Saving…' : submitLabel}
-        </Button>
-        {onCancel && (
-          <Button variant="ghost" onClick={onCancel} disabled={busy}>
-            Cancel
-          </Button>
+        {error && (
+          <p role="alert" className="text-sm text-danger">
+            {error}
+          </p>
         )}
-      </div>
-    </form>
+
+        <div className="flex gap-2">
+          <Button type="submit" variant="primary" disabled={busy}>
+            {busy ? 'Saving…' : submitLabel}
+          </Button>
+          {onCancel && (
+            <Button variant="ghost" onClick={onCancel} disabled={busy}>
+              Cancel
+            </Button>
+          )}
+        </div>
+      </form>
+
+      {addingCategory && (
+        <NewCategoryDialog onSave={saveNewCategory} onCancel={() => setAddingCategory(false)} />
+      )}
+    </>
   );
 }

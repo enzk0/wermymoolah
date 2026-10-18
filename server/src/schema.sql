@@ -28,3 +28,19 @@ CREATE TRIGGER entries_set_updated_at
   BEFORE UPDATE ON entries
   FOR EACH ROW
   EXECUTE FUNCTION set_updated_at();
+
+CREATE TABLE IF NOT EXISTS categories (
+  id          BIGSERIAL   PRIMARY KEY,
+  name        TEXT        NOT NULL UNIQUE,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+INSERT INTO categories (name) VALUES
+  ('Food'),
+  ('Transport'),
+  ('Bills'),
+  ('Shopping'),
+  ('Health'),
+  ('Fun'),
+  ('Other') 
+ON CONFLICT (name) DO NOTHING;

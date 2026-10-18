@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import { pool } from './db.js';
 import { entriesRouter } from './routes/entries.js';
+import { categoriesRouter } from './routes/categories.js';
 
 const app = express();
 const port = Number(process.env.PORT ?? 4000);
@@ -21,6 +22,7 @@ app.get('/api/health', async (req, res) => {
 });
 
 app.use('/api/entries', entriesRouter);
+app.use('/api/categories', categoriesRouter);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'not found' });

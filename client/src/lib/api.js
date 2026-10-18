@@ -54,4 +54,15 @@ export const api = {
   deleteEntry(id) {
     return request(`/entries/${id}`, { method: 'DELETE' });
   },
+
+  listCategories() {
+    return request('/categories');
+  },
+
+  createCategory(name) {
+    return request('/categories', {
+      method: 'POST',
+      body: JSON.stringify({ name }),
+    });
+  },
 };

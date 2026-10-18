@@ -7,7 +7,17 @@ import { longDayLabel, todayKey } from '../lib/day.js';
 const card = 'overflow-hidden rounded-xl border border-rule bg-surface shadow-card';
 const pill = 'rounded-full px-2 py-0.5 text-[0.7rem] font-semibold tracking-wide uppercase';
 
-export function DayDetail({ day, entries, busy, onCreate, onUpdate, onDelete, onClose }) {
+export function DayDetail({
+  day,
+  entries,
+  categories,
+  onCreateCategory,
+  busy,
+  onCreate,
+  onUpdate,
+  onDelete,
+  onClose,
+}) {
   const [editingId, setEditingId] = useState(null);
 
   if (!day) {
@@ -36,7 +46,9 @@ export function DayDetail({ day, entries, busy, onCreate, onUpdate, onDelete, on
                 {entries.length} {entries.length === 1 ? 'entry' : 'entries'}
               </>
             )}
-            {day === todayKey() && <span className={`${pill} bg-today-wash text-today`}>Today</span>}
+            {day === todayKey() && (
+              <span className={`${pill} bg-today-wash text-today`}>Today</span>
+            )}
           </p>
         </div>
         <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close day details">
@@ -50,6 +62,8 @@ export function DayDetail({ day, entries, busy, onCreate, onUpdate, onDelete, on
             <li key={entry.id} className="border-b border-rule bg-surface-sunk px-4 py-3">
               <EntryForm
                 entry={entry}
+                categories={categories}
+                onCreateCategory={onCreateCategory}
                 submitLabel="Save changes"
                 busy={busy}
                 autoFocus
@@ -104,7 +118,13 @@ export function DayDetail({ day, entries, busy, onCreate, onUpdate, onDelete, on
         <h3 className="mb-2.5 text-[0.7rem] font-semibold tracking-widest text-ink-faint uppercase">
           Add an entry
         </h3>
-        <EntryForm submitLabel="Add" busy={busy} onSubmit={(draft) => onCreate(day, draft)} />
+        <EntryForm
+          categories={categories}
+          onCreateCategory={onCreateCategory}
+          submitLabel="Add"
+          busy={busy}
+          onSubmit={(draft) => onCreate(day, draft)}
+        />
       </div>
     </aside>
   );

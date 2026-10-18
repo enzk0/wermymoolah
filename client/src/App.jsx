@@ -4,12 +4,15 @@ import { DayDetail } from './components/DayDetail.jsx';
 import { MonthCalendar } from './components/MonthCalendar.jsx';
 import { addDays, addMonths, isInMonth, monthOf, todayKey } from './lib/day.js';
 import { useEntries } from './lib/useEntries.js';
+import { useCategories } from './lib/useCategories.js';
 
 const ARROW_STEPS = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 };
 
 export function App() {
   const [month, setMonth] = useState(monthOf(todayKey()));
   const [selectedDay, setSelectedDay] = useState(todayKey());
+
+  const { categories, createCategory } = useCategories();
 
   const {
     entriesByDay,
@@ -91,6 +94,8 @@ export function App() {
         <DayDetail
           day={selectedDay}
           entries={entriesByDay[selectedDay] ?? []}
+          categories={categories}
+          onCreateCategory={createCategory}
           busy={busy}
           onCreate={createEntry}
           onUpdate={updateEntry}
