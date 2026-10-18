@@ -18,8 +18,7 @@ with Tailwind CSS.
 
 ## Setup
 
-You need Node 22 or newer and Postgres running, with the `moolah` role and database the
-TypeScript project's README set up. If the TypeScript version works, this one will too.
+You need Node 22 or newer and Postgres running with the `moolah` role
 
 ```bash
 cd ~/programming/wermymoolah-js
