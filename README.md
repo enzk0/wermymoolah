@@ -15,3 +15,18 @@ with Tailwind CSS.
 - **Amount, note, or both.** A note with no amount still gets a dot on the calendar.
 - Edit and delete entries; totals for the day and the month.
 - Arrow keys move between days, <kbd>Esc</kbd> closes the panel.
+
+## Setup
+
+You need Node 22 or newer and Postgres running, with the `moolah` role and database the
+TypeScript project's README set up. If the TypeScript version works, this one will too.
+
+```bash
+cd ~/programming/wermymoolah-js
+npm install
+npm run migrate
+npm run seed
+npm run dev
+```
+
+Open <http://localhost:5173>.
