@@ -1,4 +1,4 @@
-export const CURRENCY = 'USD';
+export const CURRENCY = 'PHP';
 
 const fullFormat = new Intl.NumberFormat(undefined, {
   style: 'currency',
