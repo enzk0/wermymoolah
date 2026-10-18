@@ -1,0 +1,63 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-paper: #f7f4ee;
+  --color-surface: #fffdf9;
+  --color-surface-sunk: #f0ece3;
+  --color-surface-hover: #f5f1e8;
+
+  --color-ink: #23201b;
+  --color-ink-soft: #5d574d;
+  --color-ink-faint: #9b9488;
+
+  --color-rule: #e0d9cc;
+  --color-rule-strong: #cdc4b3;
+
+  --color-accent: #1f7a5c;
+  --color-accent-ink: #ffffff;
+  --color-accent-wash: #e3f1ea;
+  --color-today: #b4541e;
+  --color-today-wash: #fbe9de;
+  --color-danger: #a32f2f;
+  --color-danger-wash: #f9e5e4;
+
+  --shadow-card: 0 1px 2px rgb(35 32 27 / 6%), 0 8px 24px rgb(35 32 27 / 6%);
+
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper: #16151a;
+    --color-surface: #1e1d24;
+    --color-surface-sunk: #26252d;
+    --color-surface-hover: #2b2a33;
+
+    --color-ink: #eceaf2;
+    --color-ink-soft: #a8a4b3;
+    --color-ink-faint: #6e6a7a;
+
+    --color-rule: #312f3a;
+    --color-rule-strong: #43404e;
+
+    --color-accent: #52c79b;
+    --color-accent-ink: #11271f;
+    --color-accent-wash: #1c3b31;
+    --color-today: #e89457;
+    --color-today-wash: #3b2a1d;
+    --color-danger: #f08080;
+    --color-danger-wash: #3a2224;
+
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 40%), 0 10px 30px rgb(0 0 0 / 30%);
+  }
+}
+
+body {
+  @apply bg-paper text-ink antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "wermymoolah-js",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A calendar-first spendings tracker on the PERN stack, in plain JavaScript",
+  "type": "module",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c green,cyan \"npm run dev -w server\" \"npm run dev -w client\"",
+    "migrate": "npm run migrate -w server",
+    "seed": "npm run seed -w server",
+    "build": "npm run build -w client",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "concurrently": "^10.0.6",
+    "eslint": "^10.13.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.13.0"
+  }
+}
