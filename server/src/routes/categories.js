@@ -24,7 +24,7 @@ const createSchema = z.object({
     .trim()
     .min(1)
     .max(50)
-    .transform((s) => s.charAt(0).toUpperCase() + s.slice(1)),
+    .transform((s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()),
 });
 
 //GET all categories
