@@ -13,7 +13,8 @@
     "migrate": "npm run migrate -w server",
     "seed": "npm run seed -w server",
     "build": "npm run build -w client",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "verify": "npm run lint && npm run build"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
