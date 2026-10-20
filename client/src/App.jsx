@@ -12,7 +12,7 @@ export function App() {
   const [month, setMonth] = useState(monthOf(todayKey()));
   const [selectedDay, setSelectedDay] = useState(todayKey());
 
-  const { categories, createCategory } = useCategories();
+  const { categories, createCategory, deleteCategory } = useCategories();
 
   const {
     entriesByDay,
@@ -96,6 +96,7 @@ export function App() {
           entries={entriesByDay[selectedDay] ?? []}
           categories={categories}
           onCreateCategory={createCategory}
+          onDeleteCategory={deleteCategory}
           busy={busy}
           onCreate={createEntry}
           onUpdate={updateEntry}

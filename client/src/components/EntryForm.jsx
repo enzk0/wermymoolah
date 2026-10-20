@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './Button.jsx';
+import { CategoryPicker } from './CategoryPicker.jsx';
+import { DeleteCategoryDialog } from './DeleteCategoryDialog.jsx';
 import { NewCategoryDialog } from './NewCategoryDialog.jsx';
 import { inputClasses, labelClasses } from './formStyles.js';
 import { centsToInput, parseAmountToCents } from '../lib/money.js';
-
-const NEW_CATEGORY = '__new__';
 
 export function EntryForm({
   entry,
   categories,
   onCreateCategory,
+  onDeleteCategory,
   submitLabel,
   busy,
   onSubmit,
@@ -21,6 +22,7 @@ export function EntryForm({
   const [category, setCategory] = useState(entry?.category ?? '');
   const [error, setError] = useState(null);
   const [addingCategory, setAddingCategory] = useState(false);
+  const [deletingCategory, setDeletingCategory] = useState(null);
 
   const amountInput = useRef(null);
 
@@ -52,18 +54,17 @@ export function EntryForm({
     }
   }
 
-  function handleCategoryChange(event) {
-    if (event.target.value === NEW_CATEGORY) {
-      setAddingCategory(true);
-    } else {
-      setCategory(event.target.value);
-    }
-  }
-
   async function saveNewCategory(name) {
     const created = await onCreateCategory(name);
     setCategory(created.name);
     setAddingCategory(false);
+  }
+
+  async function confirmDeleteCategory() {
+    const { id, name } = deletingCategory;
+    await onDeleteCategory(id);
+    if (name === category) setCategory('');
+    setDeletingCategory(null);
   }
 
   return (
@@ -84,23 +85,17 @@ export function EntryForm({
             />
           </label>
 
-          <label className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1">
             <span className={labelClasses}>Category</span>
-            <select
+            <CategoryPicker
+              categories={categories}
               value={category}
-              onChange={handleCategoryChange}
               disabled={busy}
-              className={inputClasses}
-            >
-              <option value="">—</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.name}>
-                  {c.name}
-                </option>
-              ))}
-              <option value={NEW_CATEGORY}>+ Create new category</option>
-            </select>
-          </label>
+              onChange={setCategory}
+              onRequestNew={() => setAddingCategory(true)}
+              onRequestDelete={setDeletingCategory}
+            />
+          </div>
         </div>
 
         <label className="flex flex-col gap-1">
@@ -135,6 +130,14 @@ export function EntryForm({
 
       {addingCategory && (
         <NewCategoryDialog onSave={saveNewCategory} onCancel={() => setAddingCategory(false)} />
+      )}
+
+      {deletingCategory && (
+        <DeleteCategoryDialog
+          category={deletingCategory}
+          onConfirm={confirmDeleteCategory}
+          onCancel={() => setDeletingCategory(null)}
+        />
       )}
     </>
   );

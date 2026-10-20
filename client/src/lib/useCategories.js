@@ -22,9 +22,15 @@ export function useCategories() {
     return created;
   }
 
+  async function deleteCategory(id) {
+    await api.deleteCategory(id);
+    setCategories((prev) => prev.filter((c) => c.id !== id));
+  }
+
   return {
     categories,
     error,
     createCategory,
+    deleteCategory,
   };
 }

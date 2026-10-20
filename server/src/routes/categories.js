@@ -18,7 +18,7 @@ const idSchema = z.object({
   id: z.coerce.number().int().positive(),
 });
 
-const createSchema = z.object({
+const categorySchema = z.object({
   name: z
     .string()
     .trim()
@@ -27,7 +27,6 @@ const createSchema = z.object({
     .transform((s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()),
 });
 
-//GET all categories
 categoriesRouter.get('/', async (req, res) => {
   const result = await query(
     `SELECT ${COLUMNS} FROM categories 
@@ -37,7 +36,6 @@ categoriesRouter.get('/', async (req, res) => {
   res.json(result.rows.map(toCategory));
 });
 
-//GET category by id
 categoriesRouter.get('/:id', async (req, res) => {
   const parsed = idSchema.safeParse(req.params);
   if (!parsed.success) {
@@ -56,9 +54,8 @@ categoriesRouter.get('/:id', async (req, res) => {
   res.json(toCategory(result.rows[0]));
 });
 
-//POST a new category
 categoriesRouter.post('/', async (req, res) => {
-  const parsed = createSchema.safeParse(req.body);
+  const parsed = categorySchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: 'invalid category', details: parsed.error.issues });
     return;
@@ -69,7 +66,7 @@ categoriesRouter.post('/', async (req, res) => {
     `INSERT INTO categories (name)
           VALUES ($1)
       ON CONFLICT (name) DO NOTHING
-          RETURNING ${COLUMNS}`, // RETURNING gives back the row we just inserted
+          RETURNING ${COLUMNS}`,
     [name],
   );
 
@@ -79,4 +76,22 @@ categoriesRouter.post('/', async (req, res) => {
   }
 
   res.status(201).json(toCategory(result.rows[0]));
+});
+
+categoriesRouter.delete('/:id', async (req, res) => {
+  const parsed = idSchema.safeParse(req.params);
+  if (!parsed.success) {
+    res.status(400).json({ error: 'invalid id', details: parsed.error.issues });
+    return;
+  }
+
+  const { id } = parsed.data;
+  const result = await query('DELETE FROM categories WHERE id = $1', [id]);
+
+  if (result.rowCount === 0) {
+    res.status(404).json({ error: 'category not found' });
+    return;
+  }
+
+  res.sendStatus(204);
 });

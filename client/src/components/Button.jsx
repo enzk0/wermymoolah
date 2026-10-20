@@ -11,6 +11,7 @@ const variants = {
   primary: 'border-accent bg-accent text-accent-ink hover:enabled:brightness-110',
   ghost: 'border-transparent text-ink-soft hover:enabled:bg-surface-hover',
   danger: 'border-transparent text-danger hover:enabled:bg-danger-wash',
+  outline: 'border-transparent text-ink-soft hover:enabled:border-ink-faint',
 };
 
 const sizes = {

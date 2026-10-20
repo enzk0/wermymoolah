@@ -65,4 +65,8 @@ export const api = {
       body: JSON.stringify({ name }),
     });
   },
+
+  deleteCategory(id) {
+    return request(`/categories/${id}`, { method: 'DELETE' });
+  },
 };

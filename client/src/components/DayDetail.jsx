@@ -12,6 +12,7 @@ export function DayDetail({
   entries,
   categories,
   onCreateCategory,
+  onDeleteCategory,
   busy,
   onCreate,
   onUpdate,
@@ -64,6 +65,7 @@ export function DayDetail({
                 entry={entry}
                 categories={categories}
                 onCreateCategory={onCreateCategory}
+                onDeleteCategory={onDeleteCategory}
                 submitLabel="Save changes"
                 busy={busy}
                 autoFocus
@@ -121,6 +123,7 @@ export function DayDetail({
         <EntryForm
           categories={categories}
           onCreateCategory={onCreateCategory}
+          onDeleteCategory={onDeleteCategory}
           submitLabel="Add"
           busy={busy}
           onSubmit={(draft) => onCreate(day, draft)}
