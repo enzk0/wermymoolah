@@ -1,4 +1,7 @@
-import { pool, query } from './db.js';
+import { requireDatabaseUrl } from './env.js';
+import { initDb, closeDb, query } from './db.js';
+
+initDb(requireDatabaseUrl());
 
 const MARKER = '[seed]';
 
@@ -45,5 +48,5 @@ try {
   console.error('[seed] failed:', err.message);
   process.exitCode = 1;
 } finally {
-  await pool.end();
+  await closeDb();
 }

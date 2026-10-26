@@ -1,8 +1,10 @@
 import { readFile } from 'node:fs/promises';
-import { pool } from './db.js';
+import { requireDatabaseUrl } from './env.js';
+import { initDb, closeDb } from './db.js';
 
 const sql = await readFile(new URL('./schema.sql', import.meta.url), 'utf8');
 
+const pool = initDb(requireDatabaseUrl());
 const client = await pool.connect();
 try {
   await client.query('BEGIN');
@@ -15,5 +17,5 @@ try {
   process.exitCode = 1;
 } finally {
   client.release();
-  await pool.end();
+  await closeDb();
 }

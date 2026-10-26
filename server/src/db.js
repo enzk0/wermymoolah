@@ -1,21 +1,28 @@
-import 'dotenv/config';
 import pg from 'pg';
 
 pg.types.setTypeParser(pg.types.builtins.DATE, (value) => value);
 
 pg.types.setTypeParser(pg.types.builtins.INT8, (value) => Number(value));
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    'DATABASE_URL is not set. Copy server/.env.example to server/.env and fill it in.',
-  );
+let pool = null;
+
+export function initDb(databaseUrl) {
+  if (pool) throw new Error('initDb() was already called.');
+  pool = new pg.Pool({ connectionString: databaseUrl, max: 10 });
+  return pool;
 }
 
-export const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
-  max: 10,
-});
+export function getPool() {
+  if (!pool) throw new Error('The database is not initialised. Call initDb() first.');
+  return pool;
+}
 
 export function query(sql, params = []) {
-  return pool.query(sql, params);
+  return getPool().query(sql, params);
+}
+
+export async function closeDb() {
+  if (!pool) return;
+  await pool.end();
+  pool = null;
 }
