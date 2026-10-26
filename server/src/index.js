@@ -1,10 +1,16 @@
+import { fileURLToPath } from 'node:url';
 import { requireDatabaseUrl } from './env.js';
 import { initDb, closeDb } from './db.js';
 import { createApp } from './app.js';
 
 initDb(requireDatabaseUrl());
 
-const app = createApp({ corsOrigin: process.env.CORS_ORIGIN ?? true });
+const clientDir =
+  process.env.NODE_ENV === 'production'
+    ? fileURLToPath(new URL('../../client/dist', import.meta.url))
+    : undefined;
+
+const app = createApp({ corsOrigin: process.env.CORS_ORIGIN ?? true, clientDir });
 const port = Number(process.env.PORT ?? 4000);
 
 const server = app.listen(port, () => {
