@@ -13,6 +13,7 @@
     "migrate": "npm run migrate -w server",
     "seed": "npm run seed -w server",
     "build": "npm run build -w client",
+    "start": "npm run build && NODE_ENV=production npm start -w server",
     "lint": "eslint .",
     "verify": "npm run lint && npm run build"
   },

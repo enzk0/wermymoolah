@@ -1,10 +1,11 @@
+import path from 'node:path';
 import express from 'express';
 import cors from 'cors';
 import { query } from './db.js';
 import { entriesRouter } from './routes/entries.js';
 import { categoriesRouter } from './routes/categories.js';
 
-export function createApp({ corsOrigin = true } = {}) {
+export function createApp({ corsOrigin = true, clientDir } = {}) {
   const app = express();
 
   app.use(cors({ origin: corsOrigin }));
@@ -22,6 +23,19 @@ export function createApp({ corsOrigin = true } = {}) {
 
   app.use('/api/entries', entriesRouter);
   app.use('/api/categories', categoriesRouter);
+
+  if (clientDir) {
+    const indexHtml = path.join(clientDir, 'index.html');
+
+    app.use(express.static(clientDir));
+
+    app.use((req, res, next) => {
+      if (req.method !== 'GET' || req.path.startsWith('/api/') || path.extname(req.path)) {
+        return next();
+      }
+      res.sendFile(indexHtml);
+    });
+  }
 
   app.use((req, res) => {
     res.status(404).json({ error: 'not found' });
