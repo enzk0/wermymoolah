@@ -16,6 +16,7 @@
     "build": "npm run build -w client",
     "start": "npm run build && NODE_ENV=production npm start -w server",
     "desktop:dev": "npm run build && npm run build -w desktop && npm start -w desktop",
+    "desktop:build": "npm run build && npm run build -w desktop && npm run dist -w desktop",
     "lint": "eslint .",
     "verify": "npm run lint && npm run build"
   },
