@@ -16,6 +16,28 @@ with Tailwind CSS.
 - Edit and delete entries; totals for the day and the month.
 - Arrow keys move between days, <kbd>Esc</kbd> closes the panel.
 
+## Download for Windows
+
+Get `wermymoolah-Setup-x.y.z.exe` from the
+[latest release](https://github.com/enzk0/wermymoolah/releases/latest) (about 150 MB) and
+run it. It installs for your user only, needs no admin rights, and adds a Start-menu
+shortcut. Nothing else is needed: the app brings its own database.
+
+**"Windows protected your PC".** The installer isn't code-signed, so SmartScreen warns
+about it. Click **More info**, then **Run anyway**.
+
+**Check the download.** Each release lists the installer's SHA-256. In PowerShell:
+
+```powershell
+Get-FileHash .\wermymoolah-Setup-1.0.0.exe
+```
+
+The `Hash` it prints should match the one on the release page (PowerShell shows it in
+capitals; case doesn't matter).
+
+**Your data** lives in `%APPDATA%\wermymoolah`. Uninstalling keeps it, so reinstalling
+picks up where you left off. Delete that folder to remove it for good.
+
 ## Setup
 
 You need Node 22 or newer and Postgres running with the `moolah` role
