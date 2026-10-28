@@ -1,0 +1,15 @@
+{
+  "name": "wermymoolah-desktop",
+  "productName": "wermymoolah",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Electron shell that runs the wermymoolah API, Postgres and calendar as one desktop app",
+  "type": "module",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^45.1.0"
+  }
+}

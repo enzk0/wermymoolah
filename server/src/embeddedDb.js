@@ -1,8 +1,13 @@
+import { execFile } from 'node:child_process';
 import crypto from 'node:crypto';
+import { once } from 'node:events';
 import fs from 'node:fs/promises';
 import net from 'node:net';
 import path from 'node:path';
+import { promisify } from 'node:util';
 import EmbeddedPostgres from 'embedded-postgres';
+
+const execFileAsync = promisify(execFile);
 
 const HOST = '127.0.0.1';
 const USER = 'moolah';
@@ -97,7 +102,7 @@ export async function startEmbeddedDb({ dataDir, onLog = console.log, onError = 
   try {
     await ensureDatabase(cluster);
   } catch (err) {
-    await cluster.stop();
+    await stopCluster(cluster, clusterDir);
     throw err;
   }
 
@@ -105,5 +110,19 @@ export async function startEmbeddedDb({ dataDir, onLog = console.log, onError = 
     `postgres://${encodeURIComponent(user)}:${encodeURIComponent(password)}` +
     `@${HOST}:${port}/${DATABASE}`;
 
-  return { databaseUrl, stop: () => cluster.stop() };
+  return { databaseUrl, stop: () => stopCluster(cluster, clusterDir) };
+}
+
+// embedded-postgres stops Windows clusters with `taskkill /f`, which leaves them needing crash
+// recovery. pg_ctl does a clean fast shutdown on every platform. Clearing `cluster.process`
+// keeps the library's exit hook from trying to stop the already-stopped cluster again.
+async function stopCluster(cluster, clusterDir) {
+  const child = cluster.process;
+  if (!child) return;
+
+  const exited = child.exitCode === null ? once(child, 'exit') : Promise.resolve();
+  const pgCtl = path.join(path.dirname(child.spawnfile), `pg_ctl${path.extname(child.spawnfile)}`);
+  await execFileAsync(pgCtl, ['stop', '-D', clusterDir, '-m', 'fast', '-w']);
+  await exited;
+  cluster.process = undefined;
 }

@@ -6,7 +6,8 @@
   "type": "module",
   "workspaces": [
     "server",
-    "client"
+    "client",
+    "desktop"
   ],
   "scripts": {
     "dev": "concurrently -n api,web -c green,cyan \"npm run dev -w server\" \"npm run dev -w client\"",
@@ -14,6 +15,7 @@
     "seed": "npm run seed -w server",
     "build": "npm run build -w client",
     "start": "npm run build && NODE_ENV=production npm start -w server",
+    "desktop:dev": "npm run build && npm start -w desktop",
     "lint": "eslint .",
     "verify": "npm run lint && npm run build"
   },

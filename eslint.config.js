@@ -8,7 +8,7 @@ export default [
   js.configs.recommended,
 
   {
-    files: ['server/**/*.js', '*.js', 'client/vite.config.js'],
+    files: ['server/**/*.js', 'desktop/**/*.js', '*.js', 'client/vite.config.js'],
     languageOptions: { globals: globals.node },
   },
 
