@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 
-export async function migrate(pool) {
-  const sql = await readFile(new URL('./schema.sql', import.meta.url), 'utf8');
+export async function migrate(pool, schemaFile = new URL('./schema.sql', import.meta.url)) {
+  const sql = await readFile(schemaFile, 'utf8');
 
   const client = await pool.connect();
   try {

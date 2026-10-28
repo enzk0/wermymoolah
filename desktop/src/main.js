@@ -7,7 +7,9 @@ import { initDb, closeDb } from '../../server/src/db.js';
 import { migrate } from '../../server/src/schema.js';
 import { createApp } from '../../server/src/app.js';
 
-const clientDir = fileURLToPath(new URL('../../client/dist', import.meta.url));
+// Resolved from the bundle in dist/, where build.mjs copies these files.
+const clientDir = fileURLToPath(new URL('./client', import.meta.url));
+const schemaFile = new URL('./schema.sql', import.meta.url);
 
 let db = null;
 let server = null;
@@ -64,7 +66,7 @@ async function start() {
     onLog: (message) => log('[pg]', message),
     onError: (err) => log('[pg]', err),
   });
-  await migrate(initDb(db.databaseUrl));
+  await migrate(initDb(db.databaseUrl), schemaFile);
   log('[main] schema applied');
 
   server = await listen(createApp({ clientDir }));
