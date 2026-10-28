@@ -12,6 +12,7 @@ docs/
 .DS_Store
 .vite/
 .embedded/
+release/
 
 CLAUDE.md
 MODEL.md

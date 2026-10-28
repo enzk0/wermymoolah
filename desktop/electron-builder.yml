@@ -1,0 +1,30 @@
+appId: com.enzk0.wermymoolah
+productName: wermymoolah
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - dist/**
+  - package.json
+
+# embedded-postgres locates its binaries relative to its own module, which inside an asar
+# archive resolves to an app.asar/... path that can't be spawned, even with asarUnpack.
+asar: false
+
+npmRebuild: false
+
+win:
+  target: nsis
+  icon: build/icon.ico
+
+nsis:
+  artifactName: ${productName}-Setup-${version}.${ext}
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+
+linux:
+  target: AppImage
+  icon: build/icon.png

@@ -4,14 +4,17 @@
   "version": "1.0.0",
   "private": true,
   "description": "Electron shell that runs the wermymoolah API, Postgres and calendar as one desktop app",
+  "author": "enzk0",
   "type": "module",
   "main": "dist/main.mjs",
   "scripts": {
     "build": "node build.mjs",
-    "start": "electron ."
+    "start": "electron .",
+    "dist": "electron-builder --publish never"
   },
   "devDependencies": {
-    "electron": "^45.1.0",
+    "electron": "45.1.0",
+    "electron-builder": "^26.18.0",
     "esbuild": "^0.28.2"
   },
   "dependencies": {
