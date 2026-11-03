@@ -5,7 +5,11 @@ export function toKey(year, month, day) {
 }
 
 export function parseKey(key) {
+  if (typeof key !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(key)) {
+    throw new TypeError('key must be a YYYY-MM-DD string');
+  }
   const [year, month, day] = key.split('-').map(Number);
+
   return { year, month, day };
 }
 
@@ -15,6 +19,9 @@ export function todayKey() {
 }
 
 export function addDays(key, amount) {
+  if (!Number.isInteger(amount)) {
+    throw new TypeError('amount must be an integer');
+  }
   const { year, month, day } = parseKey(key);
   const date = new Date(Date.UTC(year, month - 1, day + amount));
   return toKey(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
