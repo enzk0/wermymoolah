@@ -8,8 +8,8 @@ export function parseKey(key) {
   if (typeof key !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(key)) {
     throw new TypeError('key must be a YYYY-MM-DD string');
   }
-  const [year, month, day] = key.split('-').map(Number);
 
+  const [year, month, day] = key.split('-').map(Number);
   return { year, month, day };
 }
 
@@ -27,7 +27,21 @@ export function addDays(key, amount) {
   return toKey(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
 }
 
-export function addMonths({ year, month }, amount) {
+export function addMonths(yearMonth, amount) {
+  if (
+    yearMonth === null ||
+    typeof yearMonth !== 'object' ||
+    !Number.isInteger(yearMonth.year) ||
+    !Number.isInteger(yearMonth.month) ||
+    yearMonth.month < 1 ||
+    yearMonth.month > 12
+  ) {
+    throw new TypeError('expected { year, month }');
+  }
+  if (!Number.isInteger(amount)) {
+    throw new TypeError('amount must be an integer');
+  }
+  const { year, month } = yearMonth;
   const date = new Date(Date.UTC(year, month - 1 + amount, 1));
   return { year: date.getUTCFullYear(), month: date.getUTCMonth() + 1 };
 }
