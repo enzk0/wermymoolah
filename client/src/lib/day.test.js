@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addDays } from './day.js';
+import { addDays, addMonths } from './day.js';
 
 describe('addDays', () => {
   it('should return the same day if amount is 0', () => {
@@ -32,5 +32,28 @@ describe('addDays', () => {
 
   it('throws if no key is given', () => {
     expect(() => addDays(undefined, 1)).toThrow();
+  });
+});
+
+describe('addMonths', () => {
+  it('throws if no amount is given', () => {
+    expect(() => addMonths({ 2025: '01' }, undefined)).toThrow();
+  });
+  it.each([undefined, null, '2025-01', { year: 2025 }, { year: 2025, month: 13 }])(
+    'throws for invalid input %o',
+    (input) => {
+      expect(() => addMonths(input, 1)).toThrow(TypeError);
+    },
+  );
+  it('adds months within a year', () => {
+    expect(addMonths({ year: 2025, month: 3 }, 2)).toEqual({ year: 2025, month: 5 });
+  });
+
+  it('rolls over into the next year', () => {
+    expect(addMonths({ year: 2025, month: 12 }, 1)).toEqual({ year: 2026, month: 1 });
+  });
+
+  it('rolls back into the previous year', () => {
+    expect(addMonths({ year: 2025, month: 1 }, -1)).toEqual({ year: 2024, month: 12 });
   });
 });
