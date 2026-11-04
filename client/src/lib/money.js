@@ -39,9 +39,12 @@ export function centsToInput(cents) {
 }
 
 export function totalCents(entries) {
+  if (!Array.isArray(entries)) {
+    throw new TypeError('entries must be an array');
+  }
   let total = 0;
   for (const entry of entries) {
-    total += entry.amountCents;
+    if (Number.isInteger(entry?.amountCents)) total += entry.amountCents;
   }
   return total;
 }
