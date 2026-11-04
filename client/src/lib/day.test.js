@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addDays, addMonths } from './day.js';
+import { addDays, addMonths, isInMonth, monthGrid } from './day.js';
 
 describe('addDays', () => {
   it('should return the same day if amount is 0', () => {
@@ -55,5 +55,22 @@ describe('addMonths', () => {
 
   it('rolls back into the previous year', () => {
     expect(addMonths({ year: 2025, month: 1 }, -1)).toEqual({ year: 2024, month: 12 });
+  });
+});
+
+describe('monthGrid & isInMonth', () => {
+  it.each([undefined, null, '2025-01', { year: 2025 }, { year: 2025, month: 13 }])(
+    'throws for invalid input %o',
+    (input) => {
+      expect(() => monthGrid(input)).toThrow(TypeError);
+    },
+  );
+  it('should return the correct number of days in a month', () => {
+    const month = { year: 2026, month: 12 };
+    const days = monthGrid(month).filter((key) => isInMonth(key, month));
+    expect(days).toHaveLength(31);
+  });
+  it('pads the grid to full weeks', () => {
+    expect(monthGrid({ year: 2026, month: 12 })).toHaveLength(35);
   });
 });

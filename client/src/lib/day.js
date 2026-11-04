@@ -56,13 +56,22 @@ export function isInMonth(key, { year, month }) {
   return parsed.year === year && parsed.month === month;
 }
 
-export function monthGrid({ year, month }) {
-  const leadingDays = new Date(Date.UTC(year, month - 1, 1)).getUTCDay();
+export function monthGrid(yearMonth) {
+  if (
+    yearMonth === null ||
+    !Number.isInteger(yearMonth.year) ||
+    !Number.isInteger(yearMonth.month) ||
+    yearMonth.month < 1 ||
+    yearMonth.month > 12
+  ) {
+    throw new TypeError('expected { year, month }');
+  }
+  const leadingDays = new Date(Date.UTC(yearMonth.year, yearMonth.month - 1, 1)).getUTCDay();
 
-  const daysInMonth = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  const daysInMonth = new Date(Date.UTC(yearMonth.year, yearMonth.month, 0)).getUTCDate();
 
   const rows = Math.ceil((leadingDays + daysInMonth) / 7);
-  const firstShown = addDays(toKey(year, month, 1), -leadingDays);
+  const firstShown = addDays(toKey(yearMonth.year, yearMonth.month, 1), -leadingDays);
 
   const days = [];
   for (let i = 0; i < rows * 7; i++) {
