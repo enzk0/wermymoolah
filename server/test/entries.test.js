@@ -99,3 +99,33 @@ describe('PATCH&DELETE /api/entries', () => {
     expect(res2.body).toMatchObject({ error: 'invalid id' });
   });
 });
+
+describe('DELETE /api/entries', () => {
+  it('should succesfully delete an existing entry', async () => {
+    const res1 = await request(app).post('/api/entries').send({
+      entryDate: '2026-10-15',
+      amountCents: 1500,
+      note: 'delete me',
+      category: null,
+    });
+
+    const res2 = await request(app).delete(`/api/entries/${res1.body.id}`);
+
+    expect(res2.status).toBe(204);
+  });
+
+  it('could not delete an entry that does not exist', async () => {
+    const res1 = await request(app).post('/api/entries').send({
+      entryDate: '2026-10-15',
+      amountCents: 1500,
+      note: 'delete me',
+      category: null,
+    });
+
+    const res2 = await request(app).delete(`/api/entries/${res1.body.id}`);
+    const res3 = await request(app).delete(`/api/entries/${res1.body.id}`);
+
+    expect(res3.status).toBe(404);
+    expect(res3.body).toMatchObject({ error: 'entry not found' });
+  });
+});
