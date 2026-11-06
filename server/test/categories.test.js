@@ -57,6 +57,33 @@ describe('GET /api/categories', () => {
   });
 });
 
-// describe('POST /api/categories', () => {});
+describe('POST /api/categories', () => {
+  it('should succesfully post a new category', async () => {
+    const res = await request(app).post(`/api/categories`).send({ name: 'Food' });
+
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchObject({ name: 'Food' });
+  });
+
+  it.each([undefined, null])('returns an error for invalid input %o', async (input) => {
+    const res = await request(app).post('/api/categories').send({ input });
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchObject({ error: 'invalid category' });
+  });
+
+  it.each([
+    [' skibidi ', 'Skibidi'],
+    ['for you', 'For you'],
+    ['   wowity', 'Wowity'],
+    ['erm  ', 'Erm'],
+    ['123 456', '123 456'],
+  ])('normalizes %o to %o', async (input, expected) => {
+    const res = await request(app).post('/api/categories').send({ name: input });
+
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchObject({ name: expected });
+    expect(res.body.id).toEqual(expect.any(Number));
+  });
+});
 // describe('PATCH /api/categories', () => {});
 // describe('DELETE /api/categories', () => {});
