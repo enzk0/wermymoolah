@@ -65,3 +65,37 @@ describe('GET /api/entries', () => {
     expect(res.body.error).toBe('invalid range');
   });
 });
+
+describe('PATCH&DELETE /api/entries', () => {
+  it('correctly patches an entry', async () => {
+    const res1 = await request(app).post('/api/entries').send({
+      entryDate: '2026-10-15',
+      amountCents: 1500,
+      note: 'hi my name is verity',
+      category: null,
+    });
+
+    const res2 = await request(app).patch(`/api/entries/${res1.body.id}`).send({
+      note: 'my name is now falsity',
+    });
+
+    expect(res2.status).toBe(200);
+    expect(res2.body).toMatchObject({
+      id: res1.body.id,
+      note: 'my name is now falsity',
+      amountCents: 1500,
+    });
+  });
+
+  it('throws an error if no id is given', async () => {
+    const res1 = await request(app).patch(`/api/entries/${undefined}`);
+
+    expect(res1.status).toBe(400);
+    expect(res1.body).toMatchObject({ error: 'invalid id' });
+
+    const res2 = await request(app).patch(`/api/entries/${null}`);
+
+    expect(res2.status).toBe(400);
+    expect(res2.body).toMatchObject({ error: 'invalid id' });
+  });
+});
