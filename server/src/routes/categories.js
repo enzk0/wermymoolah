@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { query } from '../db.js';
+import { rmSync } from 'fs';
 
 export const categoriesRouter = Router();
 
@@ -33,6 +34,7 @@ categoriesRouter.get('/', async (req, res) => {
     ORDER BY id`,
   );
 
+  res.status(200);
   res.json(result.rows.map(toCategory));
 });
 
@@ -51,6 +53,7 @@ categoriesRouter.get('/:id', async (req, res) => {
     return;
   }
 
+  res.status(200);
   res.json(toCategory(result.rows[0]));
 });
 
