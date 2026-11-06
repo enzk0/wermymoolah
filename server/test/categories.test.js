@@ -66,7 +66,7 @@ describe('POST /api/categories', () => {
   });
 
   it.each([undefined, null])('returns an error for invalid input %o', async (input) => {
-    const res = await request(app).post('/api/categories').send({ input });
+    const res = await request(app).post('/api/categories').send({ name: input });
     expect(res.status).toBe(400);
     expect(res.body).toMatchObject({ error: 'invalid category' });
   });
@@ -85,5 +85,29 @@ describe('POST /api/categories', () => {
     expect(res.body.id).toEqual(expect.any(Number));
   });
 });
-// describe('PATCH /api/categories', () => {});
-// describe('DELETE /api/categories', () => {});
+
+describe('DELETE /api/categories', () => {
+  it('should succesfully delete an existing category', async () => {
+    const res1 = await request(app).post('/api/categories').send({ name: 'Food' });
+
+    const res2 = await request(app).delete(`/api/categories/${res1.body.id}`);
+
+    expect(res2.status).toBe(204);
+  });
+
+  it.each([undefined, null])('should return an error for invalid input', async (input) => {
+    const res = await request(app).delete(`/api/categories/${input}`);
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchObject({ error: 'invalid id' });
+  });
+
+  it('should return an error for an id that does not exist', async () => {
+    const res1 = await request(app).post('/api/categories').send({ name: 'Food' });
+
+    const res2 = await request(app).delete(`/api/categories/${res1.body.id}`);
+    const res3 = await request(app).delete(`/api/categories/${res1.body.id}`);
+
+    expect(res3.status).toBe(404);
+    expect(res3.body).toMatchObject({ error: 'category not found' });
+  });
+});
