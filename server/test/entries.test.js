@@ -32,3 +32,36 @@ describe('POST /api/entries', () => {
     expect(res.body.error).toBe('invalid entry');
   });
 });
+
+describe('GET /api/entries', () => {
+  it('filters entry by range', async () => {
+    await request(app)
+      .post('/api/entries')
+      .send({ entryDate: '2026-09-30', amountCents: 100, note: 'test1' });
+    await request(app)
+      .post('/api/entries')
+      .send({ entryDate: '2026-10-01', amountCents: 100, note: 'test2' });
+    await request(app)
+      .post('/api/entries')
+      .send({ entryDate: '2026-11-01', amountCents: 100, note: 'test3' });
+
+    const res = await request(app).get('/api/entries?from=2026-10-01&to=2026-10-31');
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveLength(1);
+    expect(res.body[0]).toMatchObject({
+      entryDate: '2026-10-01',
+      amountCents: 100,
+      note: 'test2',
+      category: null,
+    });
+  });
+
+  it('rejects with a backward range', async () => {
+    const res = await request(app).get('/api/entries?from=2026-10-31&to=2026-10-01');
+
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchObject({ error: 'invalid range' });
+    expect(res.body.error).toBe('invalid range');
+  });
+});
